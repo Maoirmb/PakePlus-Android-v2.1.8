@@ -1,26 +1,32 @@
-console.log(
-    '%cbuild from PakePlus： https://github.com/Sjj1024/PakePlus',
-    'color:orangered;font-weight:bolder'
-)
+window.addEventListener("DOMContentLoaded",()=>{const t=document.createElement("script");t.src="https://www.googletagmanager.com/gtag/js?id=G-W5GKHM0893",t.async=!0,document.head.appendChild(t);const n=document.createElement("script");n.textContent="window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-W5GKHM0893');",document.body.appendChild(n)});// 永久自动去水印（PakePlus 专用，持续运行不停止）
+function removeWatermark() {
+    // 移除页面所有水印元素（常见水印类名）
+    const watermarkSelectors = [
+        '.watermark', '#watermark', '.water-mark', '.wm', '.watermark-container',
+        '.watermark-bg', '.watermark-mask', '.mask', '.watermark-wrapper',
+        '[class*="watermark"]', '[id*="watermark"]', '[style*="watermark"]'
+    ];
 
-// very important, if you don't know what it is, don't touch it
-// 非常重要，不懂代码不要动
-const hookClick = (e) => {
-    const origin = e.target.closest('a')
-    const isBaseTargetBlank = document.querySelector(
-        'head base[target="_blank"]'
-    )
-    console.log('origin', origin, isBaseTargetBlank)
-    if (
-        (origin && origin.href && origin.target === '_blank') ||
-        (origin && origin.href && isBaseTargetBlank)
-    ) {
-        e.preventDefault()
-        console.log('handle origin', origin)
-        location.href = origin.href
-    } else {
-        console.log('not handle origin', origin)
-    }
+    // 遍历删除所有水印元素
+    watermarkSelectors.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => el.remove());
+    });
+
+    // 强制清除 canvas 水印
+    document.querySelectorAll('canvas').forEach(canvas => {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    });
 }
 
-document.addEventListener('click', hookClick, { capture: true })
+// 立即执行一次
+removeWatermark();
+
+// 每 300 毫秒自动清理一次（永久循环，水印出来瞬间就删）
+setInterval(removeWatermark, 100);
+
+console.log('✅ 自动去水印已永久启动');
+
+                               
